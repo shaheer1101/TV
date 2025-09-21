@@ -1,25 +1,29 @@
-// Ye function player open karega aur nayi window ya modal me link play karega
-function openPlayer(encodedUrl, channelName) {
-  // Base64 se URL decode
-  const url = atob(encodedUrl);
-  // Nayi tab me open karo
-  window.open(url, '_blank');
-  // Optionally alert ya console me channel ka naam
-  console.log("Playing channel:", channelName);
-}
-// script.js me:
+let hls;
+
 function openPlayer(encodedUrl, channelName) {
   const url = atob(encodedUrl); // Base64 decode
+  document.getElementById('channelTitle').innerText = channelName;
+
+  // Modal open
+  var myModal = new bootstrap.Modal(document.getElementById('playerModal'));
+  myModal.show();
+
+  // Video element
   const video = document.getElementById('player');
+  video.pause();
+  video.src = '';
+
+  if (hls) {
+    hls.destroy();
+  }
 
   if (Hls.isSupported()) {
-    const hls = new Hls();
+    hls = new Hls();
     hls.loadSource(url);
     hls.attachMedia(video);
   } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-    // Safari direct play karta hai
-    video.src = url;
+    video.src = url; // Safari direct play
   } else {
-    alert('Your browser cannot play this stream directly.');
+    alert('Your browser cannot play this stream.');
   }
 }
