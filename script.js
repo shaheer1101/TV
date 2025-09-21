@@ -7,3 +7,19 @@ function openPlayer(encodedUrl, channelName) {
   // Optionally alert ya console me channel ka naam
   console.log("Playing channel:", channelName);
 }
+// script.js me:
+function openPlayer(encodedUrl, channelName) {
+  const url = atob(encodedUrl); // Base64 decode
+  const video = document.getElementById('player');
+
+  if (Hls.isSupported()) {
+    const hls = new Hls();
+    hls.loadSource(url);
+    hls.attachMedia(video);
+  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    // Safari direct play karta hai
+    video.src = url;
+  } else {
+    alert('Your browser cannot play this stream directly.');
+  }
+}
